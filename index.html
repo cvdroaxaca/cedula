@@ -1,0 +1,1570 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cédula Ocular · Evaluación Estructural</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+  <!-- Opcional para look de PWA cuando lo instales -->
+  <meta name="theme-color" content="#1f2937" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+<style>
+  :root {
+    --ipn-guinda: #7A003C;
+    --ipn-guinda-dark: #4A0025;
+    --ipn-rosa: #C51162;
+
+    --bg-page: #f7f1f5;
+    --bg-app: #f7f1f5;
+    --card-bg: #ffffff;
+    --surface: #ffffff;
+
+    --text-main: #2b0f1b;
+    --text-muted: #7b606f;
+
+    --border-soft: #e4cdd8;
+    --border-strong: #c28aa2;
+
+    --input-bg: #ffffff;
+    --input-border: #d6b5c5;
+
+    --chip-bg: #fdf4f8;
+    --chip-border: #c28aa2;
+
+    --fieldset-bg: #fdf8fb;
+    --fieldset-border: #e0c5d4;
+
+    --legend-bg: #7A003C;
+    --legend-border: #5b002c;
+    --legend-color: #ffffff;
+
+    --app-header-bg: #7A003C;
+    --app-header-border: #5b002c;
+
+    --card-border: #e4cdd8;
+
+    --logo-bg: #ffffff;
+    --logo-border: #5b002c;
+
+    --tag-pill-bg: #fff7fb;
+    --tag-pill-border: #e4cdd8;
+    --tag-pill-dot: #C51162;
+
+    --chip-live-bg: #e7f7ec;
+    --chip-live-border: #7fbf96;
+    --chip-live-dot: #22c55e;
+
+    --file-input-bg: #ffffff;
+    --file-input-border: #d6b5c5;
+    --file-badge-bg: #7A003C;
+    --file-badge-color: #fff7fb;
+
+    --btn-primary-bg: #7A003C;
+    --btn-primary-border: #5b002c;
+
+    --btn-ghost-bg: #ffffff;
+    --btn-ghost-border: #d6b5c5;
+    --btn-ghost-color: #4a0025;
+
+    --btn-geo-bg: #fdf4f8;
+    --btn-geo-border: #c28aa2;
+    --btn-geo-color: #4a0025;
+
+    --radius-xl: 16px;
+    --radius-lg: 12px;
+    --radius-sm: 9px;
+    --gap: 1rem;
+    --safe-bottom: env(safe-area-inset-bottom, 16px);
+  }
+
+  * {
+    box-sizing: border-box;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+                 "SF Pro Text", sans-serif;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg-page);
+    color: var(--text-main);
+    min-height: 100vh;
+  }
+
+  .app-shell {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-app);
+  }
+
+  .app-header {
+    padding: 0.8rem 1rem;
+    padding-top: calc(0.8rem + env(safe-area-inset-top, 0px));
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    background: var(--app-header-bg);
+    border-bottom: 1px solid var(--app-header-border);
+    color: #ffffff;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+  }
+
+  .app-header-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .app-logo {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--logo-bg);
+    border: 1px solid var(--logo-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .app-logo span {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--ipn-guinda-dark);
+  }
+
+  .app-title-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .app-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .app-subtitle {
+    font-size: 0.72rem;
+    opacity: 0.9;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .chip-live {
+    font-size: 0.7rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    background: var(--chip-live-bg);
+    border: 1px solid var(--chip-live-border);
+    color: #166534;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .chip-live-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--chip-live-dot);
+  }
+
+  .app-content {
+    flex: 1;
+    padding: 1rem 0.6rem;
+    padding-bottom: calc(1rem + var(--safe-bottom));
+    display: flex;
+    justify-content: center;
+  }
+
+  .card {
+    width: 100%;
+    max-width: 980px;
+    border-radius: 18px;
+    background: var(--card-bg);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid var(--card-border);
+    padding: 1.3rem 1.1rem 1.5rem;
+  }
+
+  @media (min-width: 880px) {
+    .card {
+      padding: 1.6rem 1.7rem 1.8rem;
+    }
+  }
+
+  .form-header-inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--border-soft);
+    padding-bottom: 0.7rem;
+  }
+
+  .form-header-text h1 {
+    margin: 0 0 0.15rem;
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ipn-guinda-dark);
+  }
+
+  .form-header-text p {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    max-width: 480px;
+  }
+
+  .tag-pill {
+    font-size: 0.72rem;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    border: 1px solid var(--tag-pill-border);
+    color: var(--ipn-guinda-dark);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    background: var(--tag-pill-bg);
+  }
+
+  .tag-pill-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+    background: var(--tag-pill-dot);
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    margin-top: 0.2rem;
+  }
+
+  fieldset {
+    border: 1px solid var(--fieldset-border);
+    border-radius: var(--radius-xl);
+    padding: 0.8rem 0.8rem 0.9rem;
+    margin: 0;
+    background: var(--fieldset-bg);
+  }
+
+  legend {
+    padding: 0 0.6rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--legend-color);
+    background: var(--legend-bg);
+    border-radius: 999px;
+    border: 1px solid var(--legend-border);
+  }
+
+  .section-grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: var(--gap);
+    margin-top: 0.6rem;
+  }
+
+  .col-12 { grid-column: span 12; }
+  .col-9  { grid-column: span 9; }
+  .col-8  { grid-column: span 8; }
+  .col-6  { grid-column: span 6; }
+  .col-4  { grid-column: span 4; }
+  .col-3  { grid-column: span 3; }
+
+  /* En pantallas chicas TODO a una columna para que no se rompa */
+  @media (max-width: 768px) {
+    .section-grid {
+      grid-template-columns: repeat(1, minmax(0, 1fr));
+    }
+    .col-12, .col-9, .col-8, .col-6, .col-4, .col-3 {
+      grid-column: span 1;
+    }
+    .card {
+      border-radius: 0;
+      border-left: none;
+      border-right: none;
+    }
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--ipn-guinda-dark);
+  }
+
+  .hint {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+  }
+
+  input[type="text"],
+  input[type="tel"],
+  input[type="date"],
+  input[type="number"],
+  input[type="email"],
+  select,
+  textarea {
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--input-border);
+    padding: 0.5rem 0.55rem;
+    font-size: 0.88rem;
+    background-color: var(--input-bg);
+    color: var(--text-main);
+    transition: border-color 0.12s ease, box-shadow 0.12s ease;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: #b496a7;
+  }
+
+  input:focus,
+  select:focus,
+  textarea:focus {
+    outline: none;
+    border-color: var(--ipn-rosa);
+    box-shadow: 0 0 0 2px rgba(197, 17, 98, 0.25);
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 70px;
+  }
+
+  .file-input {
+    padding: 0.4rem 0.45rem;
+    background-color: var(--file-input-bg);
+    border-radius: var(--radius-sm);
+    border: 1px dashed var(--file-input-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6rem;
+    cursor: pointer;
+  }
+
+  .file-input span {
+    font-size: 0.78rem;
+    color: var(--text-main);
+  }
+
+  .file-input small {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+  }
+
+  .file-input input[type="file"] {
+    display: none;
+  }
+
+  .file-badge {
+    font-size: 0.7rem;
+    padding: 0.18rem 0.5rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--file-badge-color);
+    background: var(--file-badge-bg);
+  }
+
+  .inline-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.6rem;
+    font-size: 0.82rem;
+  }
+
+  .option-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    background: var(--chip-bg);
+    border: 1px solid var(--chip-border);
+    cursor: pointer;
+  }
+
+  .option-chip input {
+    margin: 0;
+    accent-color: var(--ipn-rosa);
+  }
+
+  .pill-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-top: 0.15rem;
+  }
+
+  .pill {
+    padding: 0.18rem 0.55rem;
+    border-radius: 999px;
+    font-size: 0.73rem;
+    border: 1px solid var(--chip-border);
+    background: var(--chip-bg);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    cursor: pointer;
+  }
+
+  .pill input {
+    margin: 0;
+    accent-color: var(--ipn-rosa);
+  }
+
+  .subsection-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.13em;
+    color: var(--text-muted);
+    margin-bottom: 0.12rem;
+  }
+
+  .muted {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+  }
+
+  .geo-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: flex-end;
+  }
+
+  .geo-row .form-group {
+    flex: 1 1 120px;
+  }
+
+  .geo-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    min-width: 150px;
+  }
+
+  .geo-status {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    min-height: 1.1em;
+  }
+
+  .btn {
+    appearance: none;
+    border: none;
+    border-radius: 999px;
+    padding: 0.55rem 1.4rem;
+    font-size: 0.86rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    transition: background 0.12s ease, transform 0.06s ease,
+                box-shadow 0.12s ease, border-color 0.12s ease;
+    white-space: nowrap;
+  }
+
+  .btn-primary {
+    background: var(--btn-primary-bg);
+    color: #ffffff;
+    border: 1px solid var(--btn-primary-border);
+    box-shadow: 0 3px 8px rgba(90, 0, 40, 0.35);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 12px rgba(90, 0, 40, 0.45);
+  }
+
+  .btn-ghost {
+    background: var(--btn-ghost-bg);
+    color: var(--btn-ghost-color);
+    border: 1px solid var(--btn-ghost-border);
+  }
+
+  .btn-ghost:hover {
+    background: #f5e5ed;
+  }
+
+  .btn-geo {
+    padding-inline: 0.9rem;
+    font-size: 0.8rem;
+    background: var(--btn-geo-bg);
+    color: var(--btn-geo-color);
+    border: 1px solid var(--btn-geo-border);
+  }
+
+  .btn-geo:hover {
+    background: #f8e2ee;
+  }
+
+  .footer-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.9rem;
+    border-top: 1px solid var(--border-soft);
+    padding-top: 0.9rem;
+    margin-top: 0.3rem;
+  }
+
+  .footer-meta {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+  }
+
+  .footer-meta strong {
+    color: var(--ipn-guinda-dark);
+  }
+
+  @media (max-width: 600px) {
+    .footer-actions {
+      flex-direction: column-reverse;
+      align-items: stretch;
+    }
+    .btn {
+      width: 100%;
+    }
+    .geo-row {
+      align-items: stretch;
+    }
+    .geo-actions {
+      width: 100%;
+    }
+  }
+</style>
+
+
+</head>
+<body data-theme="dark">
+
+  <div class="app-shell">
+    <header class="app-header">
+      <div class="app-header-left">
+        <div class="app-logo">
+          <span>SE</span>
+        </div>
+        <div class="app-title-wrap">
+          <div class="app-title">Evaluación estructural</div>
+          <div class="app-subtitle">Cédula ocular de inmueble</div>
+        </div>
+      </div>
+      <div class="chip-live">
+        <span class="chip-live-dot"></span>
+        Campo
+      </div>
+    </header>
+
+    <main class="app-content">
+      <section class="card">
+        <div class="form-header-inner">
+          <div class="form-header-text">
+            <h1>Cédula Ocular para Evaluación Estructural</h1>
+            <p>
+              Formulario responsivo optimizado para dispositivos móviles. Captura datos
+              del evaluador, información del inmueble, sistema estructural, daños y croquis.
+            </p>
+          </div>
+          <div class="tag-pill">
+            <span class="tag-pill-dot"></span>
+            Versión móvil · PWA-like
+          </div>
+        </div>
+
+        <form id="cedulaForm"> 
+          <!-- DATOS DEL EVALUADOR -->
+          <fieldset>
+            <legend>Datos del Evaluador</legend>
+            <div class="section-grid">
+              <div class="form-group col-8">
+                <label for="evaluador">Nombre del Evaluador</label>
+                <input type="text" id="evaluador" name="evaluador" placeholder="Nombre completo" autocomplete="name" />
+              </div>
+
+              <div class="form-group col-4">
+                <label for="perfil">Perfil</label>
+                <select id="perfil" name="perfil">
+                  <option value="">Selecciona una opción</option>
+                  <option>Ingeniero Civil</option>
+                  <option>Arquitecto</option>
+                  <option>Otro</option>
+                </select>
+                <span class="hint">Profesión principal del evaluador</span>
+              </div>
+
+              <div class="form-group col-4">
+                <label for="perfil-academico">Condición académica</label>
+                <select id="perfil-academico" name="perfil_academico">
+                  <option value="">Selecciona una opción</option>
+                  <option>Profesional titulado</option>
+                  <option>Estudiante de Ingeniería</option>
+                  <option>Estudiante de Arquitectura</option>
+                </select>
+              </div>
+
+              <div class="form-group col-4">
+                <label for="telefono">Teléfono</label>
+                <input type="tel" id="telefono" name="telefono" placeholder="10 dígitos" autocomplete="tel" />
+              </div>
+
+              <div class="form-group col-4">
+                <label for="correo">Correo electrónico</label>
+                <input type="email" id="correo" name="correo" placeholder="correo@ejemplo.com" autocomplete="email" />
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- INFORMACIÓN GENERAL -->
+          <fieldset>
+            <legend>Información General del Inmueble</legend>
+            <div class="section-grid">
+              <div class="form-group col-3">
+                <label for="fecha">Fecha de evaluación</label>
+                <input type="date" id="fecha" name="fecha" />
+              </div>
+
+              <div class="form-group col-3">
+                <label for="clues">C.L.U.E.S.</label>
+                <input type="text" id="clues" name="clues" placeholder="Clave, si aplica" />
+              </div>
+
+              <!-- Geolocalización -->
+              <div class="form-group col-6">
+                <label>Coordenadas (GPS)</label>
+                <div class="geo-row">
+                  <div class="form-group">
+                    <input type="text" id="lat" name="lat" placeholder="Latitud" inputmode="decimal" />
+                  </div>
+                  <div class="form-group">
+                    <input type="text" id="lng" name="lng" placeholder="Longitud" inputmode="decimal" />
+                  </div>
+                  <div class="geo-actions">
+                    <button type="button" class="btn btn-geo" id="btnGeo">
+                      📍 Usar ubicación actual
+                    </button>
+                    <div class="geo-status" id="geoStatus"></div>
+                  </div>
+                </div>
+                <span class="hint">
+                  En dispositivos móviles, activa el GPS para mayor precisión.
+                </span>
+              </div>
+
+              <div class="form-group col-8">
+                <label for="nombre-inmueble">Nombre del Inmueble</label>
+                <input type="text" id="nombre-inmueble" name="nombre_inmueble"
+                       placeholder="Ej. Centro de Salud, Hospital, etc." />
+              </div>
+
+              <div class="form-group col-4">
+                <label>Entorno</label>
+                <div class="inline-options" id="tipo-entorno">
+                  <label class="option-chip">
+                    <input type="radio" name="entorno" value="urbano" /> Urbano
+                  </label>
+                  <label class="option-chip">
+                    <input type="radio" name="entorno" value="rural" /> Rural
+                  </label>
+                </div>
+              </div>
+
+              <div class="form-group col-6">
+                <label for="calle">Calle y Número</label>
+                <input type="text" id="calle" name="calle" placeholder="Calle, número exterior e interior" />
+              </div>
+
+              <div class="form-group col-3">
+                <label for="colonia">Colonia</label>
+                <input type="text" id="colonia" name="colonia" />
+              </div>
+
+              <div class="form-group col-3">
+                <label for="cp">Código Postal</label>
+                <input type="text" id="cp" name="cp" inputmode="numeric" />
+              </div>
+
+              <div class="form-group col-3">
+                <label for="localidad">Localidad</label>
+                <input type="text" id="localidad" name="localidad" />
+              </div>
+
+              <div class="form-group col-3">
+                <label for="municipio">Municipio</label>
+                <input type="text" id="municipio" name="municipio" />
+              </div>
+
+              <div class="form-group col-3">
+                <label for="jurisdiccion">Jurisdicción</label>
+                <input type="text" id="jurisdiccion" name="jurisdiccion" />
+              </div>
+
+              <div class="form-group col-3">
+                <label for="estado">Estado</label>
+                <input type="text" id="estado" name="estado" />
+              </div>
+
+              <div class="form-group col-12">
+                <label for="referencias">Referencias de ubicación</label>
+                <textarea id="referencias" name="referencias"
+                          placeholder="Puntos de referencia, accesos, calles cercanas, etc."></textarea>
+              </div>
+
+              <div class="form-group col-6">
+                <label for="persona-contacto">Persona contactada</label>
+                <input type="text" id="persona-contacto" name="persona_contacto" />
+              </div>
+
+              <div class="form-group col-3">
+                <label for="tel-contacto">Teléfono de contacto</label>
+                <input type="tel" id="tel-contacto" name="tel_contacto" />
+              </div>
+
+              <div class="form-group col-3">
+                <label for="jurisdiccion-salud">Jurisdicción Sanitaria</label>
+                <input type="text" id="jurisdiccion-salud" name="jurisdiccion_salud" />
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- TIPOLOGÍA DEL INMUEBLE -->
+          <fieldset>
+            <legend>Tipología del Inmueble y Uso</legend>
+            <div class="section-grid">
+              <div class="form-group col-6">
+                <label for="tipo-inmueble">Tipología principal</label>
+                <select id="tipo-inmueble" name="tipo_inmueble">
+                  <option value="">Selecciona una opción</option>
+                  <option>Casa de Salud</option>
+                  <option>Centro de Salud</option>
+                  <option>CESSA</option>
+                  <option>Hospital</option>
+                  <option>UNEME</option>
+                  <option>Clínica de Especialidades</option>
+                  <option>Centro Comunitario de Salud Mental y Adicciones (CECOSAMA)</option>
+                  <option>Otro</option>
+                </select>
+              </div>
+
+              <div class="form-group col-6">
+                <label for="tipo-inmueble-otro">Si seleccionaste "Otro", especifica</label>
+                <input type="text" id="tipo-inmueble-otro" name="tipo_inmueble_otro"
+                       placeholder="Describe el tipo de inmueble" />
+              </div>
+
+              <div class="form-group col-12">
+                <label>Clasificación de servicio (marcar los que apliquen)</label>
+                <div class="pill-group">
+                  <label class="pill">
+                    <input type="checkbox" name="servicio[]" value="comunitario" /> Comunitario
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="servicio[]" value="general" /> General
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="servicio[]" value="cronicas" /> Enfermedades Crónicas (EC)
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="servicio[]" value="nucleos-basicos" /> Núcleos Básicos
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="servicio[]" value="salud-mental" /> Salud Mental y Adicciones
+                  </label>
+                </div>
+              </div>
+
+              <div class="form-group col-3">
+                <label for="edad-inmueble">Edad del inmueble (años)</label>
+                <input type="number" min="0" id="edad-inmueble" name="edad_inmueble" />
+              </div>
+
+              <div class="form-group col-3">
+                <label for="niveles">Número de niveles</label>
+                <input type="number" min="0" id="niveles" name="niveles" />
+              </div>
+
+              <div class="form-group col-3">
+                <label for="sotanos">Número de sótanos</label>
+                <input type="number" min="0" id="sotanos" name="sotanos" />
+              </div>
+
+              <div class="form-group col-3">
+                <label for="ocupantes">Número aproximado de ocupantes</label>
+                <input type="number" min="0" id="ocupantes" name="ocupantes" />
+              </div>
+
+              <div class="form-group col-3">
+                <label for="altura">Altura / pisos</label>
+                <input type="text" id="altura" name="altura" placeholder="Ej. 3 niveles / 10 m" />
+              </div>
+
+              <div class="form-group col-3">
+                <label for="frente">Frente X (m)</label>
+                <input type="text" id="frente" name="frente" />
+              </div>
+
+              <div class="form-group col-3">
+                <label for="fondo">Fondo Y (m)</label>
+                <input type="text" id="fondo" name="fondo" />
+              </div>
+
+              <div class="form-group col-3">
+                <label for="area-planta">Área por planta (m²)</label>
+                <input type="text" id="area-planta" name="area_planta" />
+              </div>
+
+              <div class="form-group col-3">
+                <label for="area-total">Área total (m²)</label>
+                <input type="text" id="area-total" name="area_total" />
+              </div>
+
+              <div class="form-group col-9">
+                <label>Tipología del terreno</label>
+                <div class="pill-group">
+                  <label class="pill">
+                    <input type="checkbox" name="terreno[]" value="planicie" /> Planicie
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="terreno[]" value="costa" /> Costa
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="terreno[]" value="ladera" /> Ladera de cerro
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="terreno[]" value="rivera" /> Rivera río / lago / arroyo
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="terreno[]" value="fondo-valle" /> Fondo de valle
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="terreno[]" value="deposito-lacustre" /> Depósito lacustre
+                  </label>
+                </div>
+              </div>
+
+              <div class="form-group col-3">
+                <label for="ubicacion-geotecnica">Ubicación geotécnica</label>
+                <input type="text" id="ubicacion-geotecnica" name="ubicacion_geotecnica" placeholder="Ej. NTCEOAX" />
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- SISTEMA ESTRUCTURAL -->
+          <fieldset>
+            <legend>Sistema Estructural y Elementos Principales</legend>
+            <div class="section-grid">
+              <div class="form-group col-12">
+                <div class="subsection-title">Sistema estructural</div>
+                <p class="muted">Marcar los sistemas predominantes en el inmueble.</p>
+                <div class="pill-group">
+                  <label class="pill">
+                    <input type="checkbox" name="sist_estructural[]" value="marcos-acero" /> Marcos de acero
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="sist_estructural[]" value="marcos-concreto" /> Marcos de concreto
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="sist_estructural[]" value="marcos-madera" /> Marcos de madera
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="sist_estructural[]" value="muros-concreto" /> Muros de concreto
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="sist_estructural[]" value="muros-carga-mamposteria" /> Muros de carga de mampostería
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="sist_estructural[]" value="muros-adobe-bajareque" /> Muros de adobe o bajareque
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="sist_estructural[]" value="columnas-losa-plana" /> Columnas y losa plana (sin vigas)
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="sist_estructural[]" value="contravientos" /> Uso de contravientos
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="sist_estructural[]" value="muros-madera-lamina-otros" /> Muros de madera, lámina u otros
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="sist_estructural[]" value="otro" /> Otro
+                  </label>
+                </div>
+              </div>
+
+              <div class="form-group col-6">
+                <div class="subsection-title">Muros</div>
+                <div class="pill-group">
+                  <label class="pill">
+                    <input type="checkbox" name="muros[]" value="confinados" /> Confinados
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="muros[]" value="refuerzo-interior" /> Refuerzo interior
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="muros[]" value="simple" /> Simple
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="muros[]" value="tabique-arcilla" /> Tabique de arcilla (ladrillo)
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="muros[]" value="tabique-hueco-arcilla" /> Tabique hueco de arcilla
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="muros[]" value="tabique-hueco-concreto" /> Tabique hueco de concreto
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="muros[]" value="tabicon-concreto" /> Tabicón de concreto
+                  </label>
+                </div>
+              </div>
+
+              <div class="form-group col-6">
+                <div class="subsection-title">Sistema de entrepisos</div>
+                <div class="pill-group">
+                  <label class="pill">
+                    <input type="checkbox" name="entrepiso[]" value="losa-maciza" /> Losa maciza
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="entrepiso[]" value="losa-reticular" /> Losa reticular
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="entrepiso[]" value="vigueta-bovedilla" /> Vigueta y bovedilla
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="entrepiso[]" value="no-se-sabe" /> No se sabe
+                  </label>
+                </div>
+              </div>
+
+              <div class="form-group col-6">
+                <div class="subsection-title">Sistema de techos</div>
+                <div class="pill-group">
+                  <label class="pill">
+                    <input type="checkbox" name="techos[]" value="losa-aligerada" /> Losa aligerada
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="techos[]" value="lamina" /> Lámina
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="techos[]" value="no-se-sabe" /> No se sabe
+                  </label>
+                </div>
+              </div>
+
+              <div class="form-group col-6">
+                <div class="subsection-title">Cimentación</div>
+                <div class="pill-group">
+                  <label class="pill">
+                    <input type="checkbox" name="cimentacion[]" value="zapata-aislada" /> Zapata aislada
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="cimentacion[]" value="zapata-corrida" /> Zapata corrida
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="cimentacion[]" value="cimiento-piedra" /> Cimiento de piedra
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="cimentacion[]" value="losa-cimentacion" /> Losa de cimentación
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="cimentacion[]" value="cajon" /> Cimentación tipo cajón
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="cimentacion[]" value="pilotes" /> Pilotes
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="cimentacion[]" value="pilas" /> Pilas
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="cimentacion[]" value="no-se-sabe" /> No se sabe
+                  </label>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- VULNERABILIDAD -->
+          <fieldset>
+            <legend>Vulnerabilidad e Irregularidades</legend>
+            <div class="section-grid">
+              <div class="form-group col-4">
+                <label for="vulnerabilidad">Vulnerabilidad (descripción)</label>
+                <textarea id="vulnerabilidad" name="vulnerabilidad"
+                          placeholder="Descripción general de la vulnerabilidad observada."></textarea>
+              </div>
+
+              <div class="form-group col-4">
+                <div class="subsection-title">Posición en manzana</div>
+                <div class="inline-options">
+                  <label class="option-chip">
+                    <input type="radio" name="posicion_manzana" value="esquina" /> Esquina
+                  </label>
+                  <label class="option-chip">
+                    <input type="radio" name="posicion_manzana" value="medio" /> Medio
+                  </label>
+                  <label class="option-chip">
+                    <input type="radio" name="posicion_manzana" value="aislado" /> Aislado
+                  </label>
+                </div>
+              </div>
+
+              <div class="form-group col-4">
+                <label for="separacion-vecino">Separación con edificio vecino (cm)</label>
+                <input type="number" min="0" id="separacion-vecino" name="separacion_vecino" placeholder="cm" />
+              </div>
+
+              <div class="form-group col-12">
+                <div class="subsection-title">Irregularidades constructivas (marcar)</div>
+                <div class="pill-group">
+                  <label class="pill">
+                    <input type="checkbox" name="irreg[]" value="asimetria" /> Asimetría por muros, cubos, cargas
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="irreg[]" value="aberturas" /> Grandes aberturas, entrantes / salientes
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="irreg[]" value="geom-irregular" /> Geometría irregular en planta ("L", "T", "H")
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="irreg[]" value="doble-altura" /> Planta baja de doble altura
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="irreg[]" value="muros-no-cimentacion" /> Muros / castillos no llegan a la cimentación
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="irreg[]" value="planta-flexible" /> Planta baja flexible
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="irreg[]" value="reduccion-pisos" /> Reducción brusca de pisos superiores
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="irreg[]" value="masas-superiores" /> Grandes masas en pisos superiores
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="irreg[]" value="columna-corta" /> Columna corta
+                  </label>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- EVALUACIÓN DE DAÑOS -->
+          <fieldset>
+            <legend>Evaluación de Daños</legend>
+            <div class="section-grid">
+              <div class="form-group col-6">
+                <div class="subsection-title">Daños geotécnicos</div>
+                <div class="pill-group">
+                  <label class="pill">
+                    <input type="checkbox" name="geotec[]" value="grietas-terreno" /> Grietas en terreno
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="geotec[]" value="hundimiento" /> Hundimiento
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="geotec[]" value="emersion" /> Emersión de agua
+                  </label>
+                </div>
+                <div class="form-group" style="margin-top:0.4rem;">
+                  <label for="inclinacion">Inclinación del edificio (%)</label>
+                  <input type="number" step="0.1" id="inclinacion" name="inclinacion" placeholder="Ej. 0.5" />
+                </div>
+              </div>
+
+              <div class="form-group col-6">
+                <div class="subsection-title">Ancho máximo de grietas (mm)</div>
+                <div class="section-grid">
+                  <div class="form-group col-4">
+                    <label for="grieta-cortante">Grietas cortantes</label>
+                    <input type="number" step="0.1" id="grieta-cortante" name="grieta_cortante" />
+                  </div>
+                  <div class="form-group col-4">
+                    <label for="grieta-muro">Grietas en muro</label>
+                    <input type="number" step="0.1" id="grieta-muro" name="grieta_muro" />
+                  </div>
+                  <div class="form-group col-4">
+                    <label for="grieta-flexion">Grietas por flexión</label>
+                    <input type="number" step="0.1" id="grieta-flexion" name="grieta_flexion" />
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group col-12">
+                <div class="subsection-title">Daños en elementos estructurales</div>
+                <p class="muted">Marcar los tipos de daño observados en columnas, trabes, muros, losas u otros elementos.</p>
+                <div class="pill-group">
+                  <label class="pill">
+                    <input type="checkbox" name="danios_elem[]" value="colapso" /> Colapso
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="danios_elem[]" value="grietas-cortantes" /> Grietas cortantes
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="danios_elem[]" value="grietas-flexion" /> Grietas por flexión
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="danios_elem[]" value="grietas-muro" /> Grietas en muros
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="danios_elem[]" value="aplastamiento" /> Aplastamiento
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="danios_elem[]" value="pandeo-barras" /> Pandeo de barras
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="danios_elem[]" value="pandeo-placas" /> Pandeo de placas
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="danios_elem[]" value="falla-soldadura" /> Falla de soldadura
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="danios_elem[]" value="grietas-mayores-3mm" /> Grietas &gt; 3 mm
+                  </label>
+                </div>
+              </div>
+
+              <div class="form-group col-12">
+                <div class="subsection-title">Daños en losas y entrepisos</div>
+                <div class="section-grid">
+                  <div class="form-group col-3">
+                    <label for="losa-colapso">Colapso de losa</label>
+                    <select id="losa-colapso" name="losa_colapso">
+                      <option value="">Selecciona</option>
+                      <option>Sí</option>
+                      <option>No</option>
+                    </select>
+                  </div>
+                  <div class="form-group col-3">
+                    <label for="losa-grieta-max">Grieta máx. (mm)</label>
+                    <input type="number" step="0.1" id="losa-grieta-max" name="losa_grieta_max" />
+                  </div>
+                  <div class="form-group col-3">
+                    <label for="losa-flecha-max">Flecha máxima (mm)</label>
+                    <input type="number" step="0.1" id="losa-flecha-max" name="losa_flecha_max" />
+                  </div>
+                  <div class="form-group col-3">
+                    <label for="entrepiso-critico">Entrepiso crítico</label>
+                    <input type="text" id="entrepiso-critico" name="entrepiso_critico"
+                           placeholder="Ej. Planta baja, Nivel 2" />
+                  </div>
+
+                  <div class="form-group col-3">
+                    <label for="col-severo-num">No. columnas daño severo</label>
+                    <input type="number" min="0" id="col-severo-num" name="col_severo_num" />
+                  </div>
+                  <div class="form-group col-3">
+                    <label for="col-severo-pct">% columnas daño severo</label>
+                    <input type="number" step="0.1" id="col-severo-pct" name="col_severo_pct" />
+                  </div>
+                  <div class="form-group col-3">
+                    <label for="muros-severo-num">No. muros daño severo</label>
+                    <input type="number" min="0" id="muros-severo-num" name="muros_severo_num" />
+                  </div>
+                  <div class="form-group col-3">
+                    <label for="muros-severo-pct">% muros daño severo</label>
+                    <input type="number" step="0.1" id="muros-severo-pct" name="muros_severo_pct" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- NIVEL DE DAÑO Y DOCUMENTACIÓN -->
+          <fieldset>
+            <legend>Nivel de Daño y Documentación</legend>
+            <div class="section-grid">
+              <div class="form-group col-4">
+                <label for="estado-conservacion">Estado de conservación</label>
+                <select id="estado-conservacion" name="estado_conservacion">
+                  <option value="">Selecciona</option>
+                  <option>Bueno</option>
+                  <option>Regular</option>
+                  <option>Malo</option>
+                </select>
+              </div>
+
+              <div class="form-group col-4">
+                <label for="mantenimiento">Mantenimiento</label>
+                <select id="mantenimiento" name="mantenimiento">
+                  <option value="">Selecciona</option>
+                  <option>Constante</option>
+                  <option>Ocasional</option>
+                  <option>Prácticamente nulo</option>
+                </select>
+              </div>
+
+              <div class="form-group col-4">
+                <div class="subsection-title">Nivel de daño de la estructura</div>
+                <div class="inline-options">
+                  <label class="option-chip">
+                    <input type="radio" name="nivel_danio" value="sin-danios" /> Sin daños
+                  </label>
+                  <label class="option-chip">
+                    <input type="radio" name="nivel_danio" value="ligero" /> Daño ligero
+                  </label>
+                  <label class="option-chip">
+                    <input type="radio" name="nivel_danio" value="medio" /> Daño medio
+                  </label>
+                  <label class="option-chip">
+                    <input type="radio" name="nivel_danio" value="severo" /> Daño severo
+                  </label>
+                  <label class="option-chip">
+                    <input type="radio" name="nivel_danio" value="colapso-total" /> Colapso total
+                  </label>
+                </div>
+              </div>
+
+              <div class="form-group col-6">
+                <div class="subsection-title">Otros daños</div>
+                <div class="pill-group">
+                  <label class="pill">
+                    <input type="checkbox" name="otros_danios[]" value="vidrios" /> Vidrios
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="otros_danios[]" value="acabados" /> Acabados
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="otros_danios[]" value="fachadas" /> Fachadas
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="otros_danios[]" value="bardas-pretiles" /> Bardas y pretiles
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="otros_danios[]" value="cubos" /> Cubos (escalera / elevador)
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="otros_danios[]" value="instalaciones" /> Instalaciones
+                  </label>
+                </div>
+              </div>
+
+              <div class="form-group col-6">
+                <div class="subsection-title">Documentación existente</div>
+                <div class="pill-group">
+                  <label class="pill">
+                    <input type="checkbox" name="planos[]" value="arquitectonicos" /> Planos arquitectónicos
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="planos[]" value="estructural" /> Plano estructural
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="planos[]" value="memoria-calculo" /> Memoria de cálculo
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="planos[]" value="expediente-completo" /> Expediente completo
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="planos[]" value="croquis" /> Croquis
+                  </label>
+                  <label class="pill">
+                    <input type="checkbox" name="planos[]" value="ninguno" /> Ninguno
+                  </label>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- OBSERVACIONES Y CROQUIS -->
+          <fieldset>
+            <legend>Observaciones y Croquis</legend>
+            <div class="section-grid">
+              <div class="form-group col-12">
+                <label for="observaciones">Observaciones generales</label>
+                <textarea id="observaciones" name="observaciones"
+                          placeholder="Comentarios relevantes, restricciones de acceso, recomendaciones preliminares, etc."></textarea>
+              </div>
+
+              <!-- Subir foto croquis/fachada -->
+              <div class="form-group col-6">
+                <label>Foto de fachada / croquis georreferenciado</label>
+                <label class="file-input">
+                  <div>
+                    <span>Tomar o seleccionar foto</span><br />
+                    <small>Se recomienda tomar la foto en campo (cámara trasera).</small>
+                  </div>
+                  <span class="file-badge">Imagen</span>
+                  <input type="file" id="fotoFachada" name="foto_fachada"
+                         accept="image/*" capture="environment" />
+                </label>
+              </div>
+
+              <div class="form-group col-6">
+                <label>Foto del croquis con dimensiones</label>
+                <label class="file-input">
+                  <div>
+                    <span>Subir croquis o plano</span><br />
+                    <small>Foto del dibujo con dimensiones y calles colindantes.</small>
+                  </div>
+                  <span class="file-badge">Croquis</span>
+                  <input type="file" id="fotoCroquis" name="foto_croquis"
+                         accept="image/*,application/pdf" />
+                </label>
+              </div>
+
+              <div class="form-group col-6">
+                <label for="croquis-fachada">Notas sobre fachada / croquis georreferenciado</label>
+                <textarea id="croquis-fachada" name="croquis_fachada"
+                          placeholder="Descripción o referencia a la fotografía de fachada y su georreferenciación."></textarea>
+              </div>
+
+              <div class="form-group col-6">
+                <label for="croquis-dimensiones">Notas sobre croquis con dimensiones</label>
+                <textarea id="croquis-dimensiones" name="croquis_dimensiones"
+                          placeholder="Dimensiones principales del inmueble, distancias entre calles colindantes y ancho de calle frontal."></textarea>
+              </div>
+            </div>
+          </fieldset>
+
+         <div class="footer-actions">
+  <div class="footer-meta">
+    <div><strong>Modo campo</strong> · Optimizado para móviles</div>
+    <div>Los datos pueden integrarse después a tu backend o Google Sheets.</div>
+  </div>
+  <div style="display:flex;gap:0.6rem;">
+    <button type="reset" class="btn btn-ghost">Limpiar formulario</button>
+    <button type="button" id="btnExportPdf" class="btn btn-primary">Exportar PDF (demo)</button>
+  </div>
+</div>
+
+        </form>
+      </section>
+    </main>
+  </div>
+
+<script>
+  // Geolocalización básica para llenar Lat / Lng
+  (function () {
+    const btnGeo = document.getElementById("btnGeo");
+    const geoStatus = document.getElementById("geoStatus");
+    const latInput = document.getElementById("lat");
+    const lngInput = document.getElementById("lng");
+
+    if (!btnGeo) return;
+
+    btnGeo.addEventListener("click", () => {
+      if (!navigator.geolocation) {
+        geoStatus.textContent = "Este navegador no soporta geolocalización.";
+        return;
+      }
+
+      geoStatus.textContent = "Obteniendo ubicación...";
+      btnGeo.disabled = true;
+
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          latInput.value = latitude.toFixed(6);
+          lngInput.value = longitude.toFixed(6);
+          geoStatus.textContent = "Ubicación obtenida correctamente.";
+          btnGeo.disabled = false;
+        },
+        (error) => {
+          console.error(error);
+          let msg = "No se pudo obtener la ubicación.";
+          if (error.code === error.PERMISSION_DENIED) {
+            msg = "Permiso de ubicación denegado.";
+          }
+          geoStatus.textContent = msg;
+          btnGeo.disabled = false;
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0,
+        }
+      );
+    });
+  })();
+
+  // RELLENAR FORMULARIO CON DATOS DEMO AL CARGAR
+  document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("cedulaForm");
+    if (!form) return;
+
+    // --- Datos del evaluador ---
+    form.evaluador.value         = "Ing. Demo IPN";
+    form.perfil.value            = "Ingeniero Civil";
+    form.perfil_academico.value  = "Profesional titulado";
+    form.telefono.value          = "9510000000";
+    form.correo.value            = "demo.evaluador@ipn.mx";
+
+    // --- Información general ---
+    form.fecha.value             = "2025-01-01";
+    form.clues.value             = "OAX-000-CLUES";
+    form.lat.value               = "17.060000";
+    form.lng.value               = "-96.720000";
+
+    form.nombre_inmueble.value   = "Centro de Salud Rural Ejemplo";
+    form.calle.value             = "Calle Principal 123";
+    form.colonia.value           = "Colonia Centro";
+    form.cp.value                = "68000";
+    form.localidad.value         = "San Lorenzo Cacaotepec";
+    form.municipio.value         = "Etla";
+    form.jurisdiccion.value      = "Valles Centrales";
+    form.estado.value            = "Oaxaca";
+    form.referencias.value       = "A una cuadra del parque, frente a la agencia municipal.";
+
+    form.persona_contacto.value  = "Mtra. Juana Pérez";
+    form.tel_contacto.value      = "9511112233";
+    form.jurisdiccion_salud.value= "Jurisdicción Sanitaria 01";
+
+    const entornoRural = form.querySelector('input[name="entorno"][value="rural"]');
+    if (entornoRural) entornoRural.checked = true;
+
+    // --- Tipología del inmueble ---
+    form.tipo_inmueble.value     = "Centro de Salud";
+    form.tipo_inmueble_otro.value= "";
+
+    const srvCom  = form.querySelector('input[name="servicio[]"][value="comunitario"]');
+    const srvCron = form.querySelector('input[name="servicio[]"][value="cronicas"]');
+    if (srvCom)  srvCom.checked  = true;
+    if (srvCron) srvCron.checked = true;
+
+    form.edad_inmueble.value     = 25;
+    form.niveles.value           = 2;
+    form.sotanos.value           = 0;
+    form.ocupantes.value         = 30;
+    form.altura.value            = "2 niveles / 7 m";
+    form.frente.value            = "15";
+    form.fondo.value             = "20";
+    form.area_planta.value       = "300";
+    form.area_total.value        = "600";
+
+    const terrPlanicie = form.querySelector('input[name="terreno[]"][value="planicie"]');
+    if (terrPlanicie) terrPlanicie.checked = true;
+
+    form.ubicacion_geotecnica.value = "NTCEOAX";
+
+    // --- Sistema estructural ---
+    const seMamp     = form.querySelector('input[name="sist_estructural[]"][value="muros-carga-mamposteria"]');
+    const murosConf  = form.querySelector('input[name="muros[]"][value="confinados"]');
+    const entLosa    = form.querySelector('input[name="entrepiso[]"][value="losa-maciza"]');
+    const techoLosa  = form.querySelector('input[name="techos[]"][value="losa-aligerada"]');
+    const cimZapata  = form.querySelector('input[name="cimentacion[]"][value="zapata-corrida"]');
+    if (seMamp)    seMamp.checked   = true;
+    if (murosConf) murosConf.checked= true;
+    if (entLosa)   entLosa.checked  = true;
+    if (techoLosa) techoLosa.checked= true;
+    if (cimZapata) cimZapata.checked= true;
+
+    // --- Vulnerabilidad ---
+    form.vulnerabilidad.value = "Edificio con ligera irregularidad en planta y muros de mampostería con refuerzo moderado.";
+    const posEsquina = form.querySelector('input[name="posicion_manzana"][value="esquina"]');
+    if (posEsquina) posEsquina.checked = true;
+    form.separacion_vecino.value = 50;
+
+    const irAsim = form.querySelector('input[name="irreg[]"][value="asimetria"]');
+    const irFlex = form.querySelector('input[name="irreg[]"][value="planta-flexible"]');
+    if (irAsim) irAsim.checked = true;
+    if (irFlex) irFlex.checked = true;
+
+    // --- Daños geotécnicos y grietas ---
+    const gtGrieta = form.querySelector('input[name="geotec[]"][value="grietas-terreno"]');
+    if (gtGrieta) gtGrieta.checked = true;
+
+    form.inclinacion.value     = 0.5;
+    form.grieta_cortante.value = 1.5;
+    form.grieta_muro.value     = 2.0;
+    form.grieta_flexion.value  = 0.8;
+
+    // --- Daños en losas / entrepisos ---
+    form.losa_colapso.value      = "No";
+    form.losa_grieta_max.value   = 1.2;
+    form.losa_flecha_max.value   = 3.0;
+    form.entrepiso_critico.value = "Planta baja";
+
+    form.col_severo_num.value    = 1;
+    form.col_severo_pct.value    = 5;
+    form.muros_severo_num.value  = 2;
+    form.muros_severo_pct.value  = 10;
+
+    // --- Nivel de daño y documentación ---
+    form.estado_conservacion.value = "Regular";
+    form.mantenimiento.value       = "Ocasional";
+    const nivelMedio = form.querySelector('input[name="nivel_danio"][value="medio"]');
+    if (nivelMedio) nivelMedio.checked = true;
+
+    const odFach = form.querySelector('input[name="otros_danios[]"][value="fachadas"]');
+    const odInst = form.querySelector('input[name="otros_danios[]"][value="instalaciones"]');
+    if (odFach) odFach.checked = true;
+    if (odInst) odInst.checked = true;
+
+    const plArq  = form.querySelector('input[name="planos[]"][value="arquitectonicos"]');
+    const plCroq = form.querySelector('input[name="planos[]"][value="croquis"]');
+    if (plArq)  plArq.checked  = true;
+    if (plCroq) plCroq.checked = true;
+
+    // --- Observaciones y croquis ---
+    form.observaciones.value = "Se recomienda revisión detallada por especialista estructural y mantenimiento preventivo en fachadas e instalaciones.";
+    form.croquis_fachada.value = "Fachada principal orientada al norte, con acceso por calle principal y patio posterior de servicio.";
+    form.croquis_dimensiones.value = "Terreno de 15 x 20 m, acceso por calle de 8 m de ancho, colinda al sur con área verde y al oeste con vivienda.";
+
+    // --- Botón Exportar PDF con TODO el diseño ---
+    const btnExport = document.getElementById("btnExportPdf");
+    const card = document.querySelector(".card");
+
+    if (btnExport && card && window.html2pdf) {
+      btnExport.addEventListener("click", () => {
+
+        const opt = {
+          margin: 5,
+          filename: "cedula_estructural_demo.pdf",
+          image: { type: "jpeg", quality: 0.98 },
+          html2canvas: {
+            scale: 2,
+            useCORS: true,
+            scrollY: -window.scrollY,                       // toma todo, no solo lo visible
+            windowWidth:  card.scrollWidth,
+            windowHeight: card.scrollHeight
+          },
+          jsPDF: {
+            unit: "mm",
+            format: "a4",
+            orientation: "portrait"
+          },
+          pagebreak: {
+            mode: ["css", "legacy"]                        // permite multipágina
+          }
+        };
+
+        html2pdf().set(opt).from(card).save();
+      });
+    }
+  });
+</script>
+
+
+</body>
+</html>
