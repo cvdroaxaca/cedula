@@ -1423,8 +1423,14 @@
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
+   
           latInput.value = latitude.toFixed(6);
           lngInput.value = longitude.toFixed(6);
+      
+          // 🔹 Aquí forzamos el estilo verde de campos automáticos
+          latInput.classList.add("auto-field");
+          lngInput.classList.add("auto-field");
+      
           geoStatus.textContent = "Ubicación obtenida correctamente.";
           geoStatus.style.color = "#16a34a";   // ← VERDE
           geoStatus.style.fontWeight = "600";  // opcional
