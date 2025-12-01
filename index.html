@@ -4,10 +4,14 @@
   <meta charset="UTF-8" />
   <title>Cédula de evaluación estructural ocular</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#7A003C" />
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <!-- Opcional para look de PWA cuando lo instales -->
-  <meta name="theme-color" content="#1f2937" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
@@ -67,11 +71,11 @@
 
     --btn-ghost-bg: #ffffff;
     --btn-ghost-border: #d6b5c5;
-    --btn-ghost-color: #4a0025;
+    --btn-ghost-color: #7A003C;
 
     --btn-geo-bg: #fdf4f8;
     --btn-geo-border: #c28aa2;
-    --btn-geo-color: #4a0025;
+    --btn-geo-color: #166534;
 
     --radius-xl: 16px;
     --radius-lg: 12px;
@@ -99,6 +103,11 @@
     display: flex;
     flex-direction: column;
     background: var(--bg-app);
+  }
+
+.texto-verde {
+    color: green;
+    font-weight: bold; /* opcional */
   }
 
   .app-header {
@@ -500,7 +509,7 @@
 
   .btn-primary {
     background: var(--btn-primary-bg);
-    color: #ffffff;
+    color: #fdf2f8;
     border: 1px solid var(--btn-primary-border);
     box-shadow: 0 3px 8px rgba(90, 0, 40, 0.35);
   }
@@ -566,6 +575,12 @@
       width: 100%;
     }
   }
+
+  /* Campos calculados / automáticos en verde */
+  .auto-field {
+    color: #green;
+    font-weight: 600;
+  }
 </style>
 
 
@@ -580,7 +595,6 @@
         </div>
         <div class="app-title-wrap">
           <div class="app-title">Cédula de evaluación estructural ocular</div>
-        
         </div>
       </div>
       <div class="chip-live">
@@ -667,10 +681,10 @@
                 <label>Coordenadas (GPS)</label>
                 <div class="geo-row">
                   <div class="form-group">
-                    <input type="text" id="lat" name="lat" placeholder="Latitud" inputmode="decimal" />
+                    <input type="text" id="lat" name="lat" class="auto-field" placeholder="Latitud" inputmode="decimal" />
                   </div>
                   <div class="form-group">
-                    <input type="text" id="lng" name="lng" placeholder="Longitud" inputmode="decimal" />
+                    <input type="text" id="lng" name="lng" class="auto-field" placeholder="Longitud" inputmode="decimal" />
                   </div>
                   <div class="geo-actions">
                     <button type="button" class="btn btn-geo" id="btnGeo">
@@ -768,13 +782,12 @@
                 <label for="tipo-inmueble">Tipología principal</label>
                 <select id="tipo-inmueble" name="tipo_inmueble">
                   <option value="">Selecciona una opción</option>
-                  <option>Casa de Salud</option>
-                  <option>Centro de Salud</option>
-                  <option>CESSA</option>
-                  <option>Hospital</option>
-                  <option>UNEME</option>
-                  <option>Clínica de Especialidades</option>
-                  <option>Centro Comunitario de Salud Mental y Adicciones (CECOSAMA)</option>
+                  <option>Salud</option>
+                  <option>Educación</option>
+                  <option>Particular</option>
+                  <option>Municipal</option>
+                  <option>Estatal</option>
+                  <option>Recreación</option>
                   <option>Otro</option>
                 </select>
               </div>
@@ -827,8 +840,8 @@
               </div>
 
               <div class="form-group col-3">
-                <label for="altura">Altura / pisos</label>
-                <input type="text" id="altura" name="altura" placeholder="Ej. 3 niveles / 10 m" />
+                <label for="altura">Altura (m)</label>
+                <input type="number" step="0.1" id="altura" name="altura" placeholder="Ej. 7" />
               </div>
 
               <div class="form-group col-3">
@@ -843,12 +856,12 @@
 
               <div class="form-group col-3">
                 <label for="area-planta">Área por planta (m²)</label>
-                <input type="text" id="area-planta" name="area_planta" />
+                <input type="text" id="area-planta" name="area_planta" class="auto-field" readonly />
               </div>
 
               <div class="form-group col-3">
                 <label for="area-total">Área total (m²)</label>
-                <input type="text" id="area-total" name="area_total" />
+                <input type="text" id="area-total" name="area_total" class="auto-field" readonly />
               </div>
 
               <div class="form-group col-9">
@@ -1347,16 +1360,19 @@
             </div>
           </fieldset>
 
-         <div class="footer-actions">
-  <div class="footer-meta">
-    <div><strong>Modo campo</strong> · Optimizado para móviles</div>
-    <div>Los datos pueden integrarse después a tu backend o Google Sheets.</div>
-  </div>
-  <div style="display:flex;gap:0.6rem;">
-    <button type="reset" class="btn btn-ghost">Limpiar formulario</button>
-    <button type="button" id="btnExportPdf" class="btn btn-primary">Exportar PDF (demo)</button>
-  </div>
-</div>
+          <div class="footer-actions">
+            <div class="footer-meta">
+              <div><strong>Modo campo</strong> · Optimizado para móviles</div>
+              <div>Los datos pueden integrarse después a tu backend o Google Sheets.</div>
+            </div>
+            <div style="display:flex;gap:0.6rem;flex-wrap:wrap;justify-content:flex-end;">
+              <button type="button" id="installPWA" class="btn btn-ghost" style="display:none;">
+                Instalar aplicación
+              </button>
+              <button type="reset" class="btn btn-ghost">Limpiar formulario</button>
+              <button type="button" id="btnExportPdf" class="btn btn-primary">Exportar PDF</button>
+            </div>
+          </div>
 
         </form>
       </section>
@@ -1408,6 +1424,51 @@
     });
   })();
 
+  // Funciones para cálculo automático de áreas
+  function setupAreaCalculations(form) {
+    const frenteInput = form.frente;
+    const fondoInput = form.fondo;
+    const nivelesInput = form.niveles;
+    const areaPlantaInput = form.area_planta;
+    const areaTotalInput = form.area_total;
+
+    function toNumber(value) {
+      if (!value) return null;
+      const v = parseFloat(String(value).replace(",", "."));
+      return isNaN(v) ? null : v;
+    }
+
+    function recalcAreas() {
+      const frente = toNumber(frenteInput.value);
+      const fondo = toNumber(fondoInput.value);
+      const niveles = toNumber(nivelesInput.value);
+
+      let areaPlanta = null;
+      let areaTotal = null;
+
+      if (frente !== null && fondo !== null) {
+        areaPlanta = frente * fondo;
+        areaPlantaInput.value = areaPlanta.toFixed(2);
+      } else {
+        areaPlantaInput.value = "";
+      }
+
+      if (areaPlanta !== null && niveles !== null) {
+        areaTotal = areaPlanta * niveles;
+        areaTotalInput.value = areaTotal.toFixed(2);
+      } else {
+        areaTotalInput.value = "";
+      }
+    }
+
+    frenteInput.addEventListener("input", recalcAreas);
+    fondoInput.addEventListener("input", recalcAreas);
+    nivelesInput.addEventListener("input", recalcAreas);
+
+    // cálculo inicial si ya hay datos
+    recalcAreas();
+  }
+
   // RELLENAR FORMULARIO CON DATOS DEMO AL CARGAR
   document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("cedulaForm");
@@ -1444,7 +1505,7 @@
     if (entornoRural) entornoRural.checked = true;
 
     // --- Tipología del inmueble ---
-    form.tipo_inmueble.value     = "Centro de Salud";
+    form.tipo_inmueble.value     = "Salud";
     form.tipo_inmueble_otro.value= "";
 
     const srvCom  = form.querySelector('input[name="servicio[]"][value="comunitario"]');
@@ -1456,11 +1517,9 @@
     form.niveles.value           = 2;
     form.sotanos.value           = 0;
     form.ocupantes.value         = 30;
-    form.altura.value            = "2 niveles / 7 m";
+    form.altura.value            = 7;
     form.frente.value            = "15";
     form.fondo.value             = "20";
-    form.area_planta.value       = "300";
-    form.area_total.value        = "600";
 
     const terrPlanicie = form.querySelector('input[name="terreno[]"][value="planicie"]');
     if (terrPlanicie) terrPlanicie.checked = true;
@@ -1531,6 +1590,9 @@
     form.croquis_fachada.value = "Fachada principal orientada al norte, con acceso por calle principal y patio posterior de servicio.";
     form.croquis_dimensiones.value = "Terreno de 15 x 20 m, acceso por calle de 8 m de ancho, colinda al sur con área verde y al oeste con vivienda.";
 
+    // --- Cálculo automático de áreas ---
+    setupAreaCalculations(form);
+
     // --- Botón Exportar PDF con TODO el diseño ---
     const btnExport = document.getElementById("btnExportPdf");
     const card = document.querySelector(".card");
@@ -1540,12 +1602,12 @@
 
         const opt = {
           margin: 5,
-          filename: "cedula_estructural_demo.pdf",
+          filename: "Cedula_evaluacion_estructural_ocular.pdf",
           image: { type: "jpeg", quality: 0.98 },
           html2canvas: {
             scale: 2,
             useCORS: true,
-            scrollY: -window.scrollY,                       // toma todo, no solo lo visible
+            scrollY: -window.scrollY,
             windowWidth:  card.scrollWidth,
             windowHeight: card.scrollHeight
           },
@@ -1555,13 +1617,41 @@
             orientation: "portrait"
           },
           pagebreak: {
-            mode: ["css", "legacy"]                        // permite multipágina
+            mode: ["css", "legacy"]
           }
         };
 
         html2pdf().set(opt).from(card).save();
       });
     }
+  });
+
+  // --- PWA: registro de Service Worker ---
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker
+        .register("./service-worker.js")
+        .catch((err) => console.error("SW registration failed:", err));
+    });
+  }
+
+  // --- PWA: botón para instalar la app ---
+  let deferredPrompt = null;
+
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    const btn = document.getElementById("installPWA");
+    if (btn) btn.style.display = "inline-flex";
+  });
+
+  document.getElementById("installPWA")?.addEventListener("click", async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    await deferredPrompt.userChoice;
+    deferredPrompt = null;
+    const btn = document.getElementById("installPWA");
+    if (btn) btn.style.display = "none";
   });
 </script>
 
