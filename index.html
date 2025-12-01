@@ -1425,7 +1425,10 @@
           latInput.value = latitude.toFixed(6);
           lngInput.value = longitude.toFixed(6);
           geoStatus.textContent = "Ubicación obtenida correctamente.";
+          geoStatus.style.color = "#16a34a";   // ← VERDE
+          geoStatus.style.fontWeight = "600";  // opcional
           btnGeo.disabled = false;
+          
         },
         (error) => {
           console.error(error);
