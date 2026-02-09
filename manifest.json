@@ -1,0 +1,21 @@
+{
+    "name": "Cédula de Evaluación Estructural",
+    "short_name": "Cédula Estructural",
+    "start_url": "./index.html",
+    "display": "standalone",
+    "background_color": "#f4f6f9",
+    "theme_color": "#6c1d45",
+    "description": "Aplicación para la evaluación estructural de inmuebles - IPN Unidad Oaxaca",
+    "icons": [
+        {
+            "src": "logo_ipn.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "logo_ipn.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}

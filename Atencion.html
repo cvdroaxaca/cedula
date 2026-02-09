@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>SISO - Sistema Integral de Seguimiento Oaxaca</title>
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+    <!-- MarkerCluster CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
+
+    <!-- Leaflet Draw CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
+
+    <style>
+        :root {
+            --ipn-guinda: #7A003C;
+            --ipn-guinda-dark: #4A0025;
+            --ipn-rosa: #C51162;
+            --bg-gradient: linear-gradient(135deg, #fdfbfd 0%, #f3eaf0 100%);
+            --text-main: #2b0f1b;
+            --text-muted: #7b606f;
+            --border-soft: #e4cdd8;
+            --radius-md: 8px;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: var(--bg-gradient);
+            font-family: system-ui, -apple-system, sans-serif;
+            color: var(--text-main);
+            height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* --- UI COMPONENTS --- */
+        .app-header {
+            background: var(--ipn-guinda);
+            color: white;
+            padding: 0.8rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 2000;
+        }
+
+        .main-nav {
+            background: white;
+            border-bottom: 1px solid var(--border-soft);
+            padding: 0.5rem;
+            white-space: nowrap;
+            overflow-x: auto;
+            z-index: 1000;
+        }
+
+        .main-nav a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-right: 1rem;
+            font-weight: 500;
+        }
+
+        .main-nav a.active {
+            color: var(--ipn-guinda);
+            font-weight: bold;
+            border-bottom: 2px solid var(--ipn-guinda);
+        }
+
+        .dashboard-container {
+            display: flex;
+            flex: 1;
+            height: calc(100dvh - 110px);
+            overflow: hidden;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 380px;
+            background: rgba(255, 255, 255, 0.97);
+            border-right: 1px solid var(--border-soft);
+            display: flex;
+            flex-direction: column;
+            z-index: 1500;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .sidebar-header {
+            padding: 1rem;
+            background: #faf7f9;
+            border-bottom: 1px solid var(--border-soft);
+        }
+
+        .tabs {
+            display: flex;
+            background: #eee;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 0.8rem;
+            text-align: center;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border-bottom: 2px solid transparent;
+            color: #666;
+        }
+
+        .tab.active {
+            background: white;
+            color: var(--ipn-guinda);
+            border-bottom-color: var(--ipn-guinda);
+        }
+
+        .sidebar-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            display: none;
+        }
+
+        .sidebar-content.active {
+            display: block;
+        }
+
+        /* LIVE FEED */
+        .feed-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .feed-item {
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #eee;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .feed-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: #888;
+            margin-bottom: 0.2rem;
+        }
+
+        .feed-main {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .feed-status-badge {
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        /* TOOLS & LAYERS */
+        .layer-control {
+            margin-bottom: 1rem;
+            padding: 0.8rem;
+            background: #fff;
+            border: 1px solid var(--border-soft);
+            border-radius: 8px;
+        }
+
+        .layer-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .geo-btn {
+            width: 100%;
+            background: var(--ipn-guinda);
+            color: white;
+            border: none;
+            padding: 0.8rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* NEAREST */
+        .nearest-card {
+            background: #fff0f5;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--ipn-rosa);
+            margin-bottom: 1rem;
+        }
+
+        /* MAP ELEMENTS */
+        .map-wrapper {
+            flex: 1;
+            position: relative;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+
+        .legend-overlay {
+            position: absolute;
+            bottom: 25px;
+            left: 20px;
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            font-size: 0.75rem;
+            z-index: 1000;
+            max-width: 220px;
+        }
+
+        .legend-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+
+        .legend-icon {
+            width: 16px;
+            height: 16px;
+            margin-right: 8px;
+            display: inline-block;
+            text-align: center;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* HELMET MARKER STYLES */
+        .helmet-icon {
+            filter: drop-shadow(0px 2px 1px rgba(0, 0, 0, 0.3));
+            transition: transform 0.2s;
+        }
+
+        .helmet-icon:hover {
+            transform: scale(1.2);
+            z-index: 9999;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: 45%;
+                order: 2;
+            }
+
+            .map-wrapper {
+                height: 55%;
+                order: 1;
+            }
+
+            .legend-overlay {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="app-header">
+        <div>
+            <div style="font-weight:700; font-size:1.1rem;">SISO</div>
+            <div style="font-size:0.7rem; opacity:0.9;">Monitoreo Estatal 360°</div>
+        </div>
+        <div style="text-align:right;">
+            <span
+                style="background:rgba(255,255,255,0.2); padding:3px 10px; border-radius:12px; font-size:0.75rem;">👷‍♂️
+                12 Activos</span>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <a href="index.html">Inicio</a>
+        <a href="Atencion.html" class="active">Panel SIG</a>
+        <a href="Reporte_Fotografico.html">Reporte Fotográfico</a>
+    </nav>
+
+    <div class="dashboard-container">
+
+        <aside class="sidebar">
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('layers')">Control SIG</div>
+                <div class="tab" onclick="switchTab('feed')">Monitor (Live)</div>
+            </div>
+
+            <div id="tab-layers" class="sidebar-content active">
+
+                <button class="geo-btn" onclick="toggleGeolocation()" id="btnGeo">
+                    <span>📍</span> Ubicarme y Analizar Cercanía
+                </button>
+
+                <div class="nearest-card" id="nearestPanel" style="display:none;">
+                    <strong style="color:var(--ipn-guinda);">Punto Más Cercano:</strong>
+                    <div id="nearInfo" style="margin-top:0.5rem; font-size:0.9rem;">Calculando...</div>
+                    <div id="nearDist" style="font-weight:bold; font-size:1.1rem;">-- km</div>
+                </div>
+
+                <div class="layer-control">
+                    <strong style="display:block; margin-bottom:0.5rem;">Capas de Visualización</strong>
+
+                    <div class="layer-row">
+                        <span>📍 Puntos (Cascos)</span>
+                        <input type="radio" name="layer" value="points" checked onchange="updateLayer(this.value)">
+                    </div>
+                    <div class="layer-row">
+                        <span>🔥 Mapa de Calor</span>
+                        <input type="radio" name="layer" value="heat" onchange="updateLayer(this.value)">
+                    </div>
+                    <div class="layer-row">
+                        <span>💠 Clústeres (Densidad)</span>
+                        <input type="radio" name="layer" value="cluster" onchange="updateLayer(this.value)">
+                    </div>
+                    <div class="layer-row">
+                        <span>🗺️ Regiones (Temático)</span>
+                        <input type="radio" name="layer" value="regions" onchange="updateLayer(this.value)">
+                    </div>
+                    <div class="layer-row">
+                        <span>🏥 Densidad por Tipo</span>
+                        <input type="radio" name="layer" value="typedensity" onchange="updateLayer(this.value)">
+                    </div>
+                </div>
+
+                <div class="layer-control">
+                    <strong style="display:block; margin-bottom:0.5rem;">Zoom Regional</strong>
+                    <select onchange="zoomToRegion(this.value)" style="width:100%; padding:0.5rem;">
+                        <option value="">Selecciona Región...</option>
+                        <option value="Valles Centrales">Valles Centrales</option>
+                        <option value="Istmo">Istmo</option>
+                        <option value="Sierra Norte">Sierra Norte</option>
+                        <option value="Sierra Sur">Sierra Sur</option>
+                        <option value="Mixteca">Mixteca</option>
+                        <option value="Costa">Costa</option>
+                        <option value="Cañada">Cañada</option>
+                        <option value="Papaloapan">Papaloapan</option>
+                        <option value="all">Todo el Estado</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <div id="tab-feed" class="sidebar-content">
+                <div style="font-size:0.8rem; color:#666; margin-bottom:1rem;">
+                    🔴 Actividad en tiempo real (Simulada)
+                </div>
+                <ul class="feed-list" id="activityFeed">
+                    <!-- Populated by JS -->
+                </ul>
+            </div>
+        </aside>
+
+        <main class="map-wrapper">
+            <div id="map"></div>
+
+            <div class="legend-overlay" id="legend">
+                <strong>Simbológia</strong>
+                <div class="legend-row" style="margin-top:5px;">
+                    <div class="legend-icon">👷</div> Punto de Atención
+                </div>
+                <hr style="border:0; border-top:1px solid #eee; margin:5px 0;">
+                <div class="legend-row">
+                    <div class="legend-icon" style="background:#d32f2f; border-radius:3px;"></div> Prioridad Alta
+                </div>
+                <div class="legend-row">
+                    <div class="legend-icon" style="background:#f57c00; border-radius:3px;"></div> Prioridad Media
+                </div>
+                <div class="legend-row">
+                    <div class="legend-icon" style="background:#388e3c; border-radius:3px;"></div> Prioridad Baja
+                </div>
+            </div>
+        </main>
+
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
+    <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+
+    <script>
+        // --- 1. CONFIGURACIÓN Y DATA GENERATOR ---
+
+        const REGIONS = {
+            "Valles Centrales": { lat: 17.06, lng: -96.72, color: "#e91e63", count: 50 },
+            "Istmo": { lat: 16.43, lng: -95.02, color: "#9c27b0", count: 45 },
+            "Mixteca": { lat: 17.80, lng: -97.78, color: "#3f51b5", count: 40 },
+            "Costa": { lat: 15.87, lng: -97.07, color: "#03a9f4", count: 40 },
+            "Sierra Norte": { lat: 17.30, lng: -96.40, color: "#009688", count: 35 },
+            "Sierra Sur": { lat: 16.50, lng: -96.80, color: "#4caf50", count: 35 },
+            "Cañada": { lat: 18.10, lng: -96.90, color: "#ffeb3b", count: 30 },
+            "Papaloapan": { lat: 18.00, lng: -96.10, color: "#ff9800", count: 30 }
+        };
+
+        const PROFS = ["Arq. Sánchez", "Ing. Morales", "Arq. López", "Ing. Pérez", "D.R.O. Díaz", "Ing. Herrera", "Arq. Méndez"];
+        const TYPES = ["Salud (Hospital)", "Educación (Escuela)", "Vivienda", "Mercado Público", "Oficina Gobierno", "Puente"];
+        const PRIORITIES = ["Alta", "Media", "Baja"];
+        const STATUS_FLOW = ["Pendiente", "En Camino", "En Proceso", "Evaluado", "Reporte Enviado"];
+
+        let POINTS = [];
+
+        function generateData() {
+            let id = 1000;
+            for (const [name, reg] of Object.entries(REGIONS)) {
+                for (let i = 0; i < reg.count; i++) {
+                    // Distribución gaussiana aproximada para clústeres
+                    const lat = reg.lat + (Math.random() - 0.5) * 0.6;
+                    const lng = reg.lng + (Math.random() - 0.5) * 0.7;
+
+                    const prio = Math.random() < 0.2 ? "Alta" : (Math.random() < 0.5 ? "Media" : "Baja");
+                    const prof = PROFS[Math.floor(Math.random() * PROFS.length)];
+                    const status = STATUS_FLOW[Math.floor(Math.random() * STATUS_FLOW.length)];
+
+                    POINTS.push({
+                        id: `CED-${id++}`,
+                        municipio: name,
+                        localidad: `Loc. ${name} ${i + 1}`,
+                        lat: lat,
+                        lng: lng,
+                        priority: prio,
+                        type: TYPES[Math.floor(Math.random() * TYPES.length)],
+                        status: status,
+                        prof: prof,
+                        regionCode: reg.color
+                    });
+                }
+            }
+        }
+        generateData(); // Initialize Data (Approx 305 points)
+
+        // --- 2. MAP SETUP ---
+        const map = L.map('map').setView([17.05, -96.7], 8);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
+
+        // --- 3. LAYERS ---
+        const layers = {
+            points: L.layerGroup(),
+            cluster: L.markerClusterGroup(),
+            heat: L.heatLayer([], { radius: 25, blur: 15 }),
+            regions: L.layerGroup(),
+            typedensity: L.heatLayer([], { radius: 20, blur: 10, gradient: { 0.4: 'blue', 0.65: 'lime', 1: 'purple' } })
+        };
+
+        // --- 4. ICON FACTORY (SVG HELMET) ---
+        function getHelmetIcon(priority) {
+            let color = "#388e3c"; // Low
+            if (priority === "Alta") color = "#d32f2f";
+            if (priority === "Media") color = "#f57c00";
+
+            // Simple Helmet SVG
+            const svg = `
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="${color}" stroke="white" stroke-width="1.5">
+                <path d="M12 2a9 9 0 0 0-9 9v2a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-2a9 9 0 0 0-9-9z"/>
+                <path d="M12 2v2"/>
+            </svg>`;
+
+            return L.divIcon({
+                className: "helmet-icon",
+                html: svg,
+                iconSize: [32, 32],
+                iconAnchor: [16, 16],
+                popupAnchor: [0, -10]
+            });
+        }
+
+        // --- 5. BUILD LAYERS ---
+        const heatPoints = [];
+
+        POINTS.forEach(p => {
+            // Popup
+            const content = `
+                <div style="font-family:sans-serif; min-width:180px;">
+                    <h3 style="margin:0; font-size:1rem; color:#7A003C;">${p.id}</h3>
+                    <div style="font-size:0.8rem; color:#666;">${p.localidad}, ${p.municipio}</div>
+                    <hr style="margin:5px 0; border:0; border-top:1px solid #eee;">
+                    <div><strong>Tipo:</strong> ${p.type}</div>
+                    <div><strong>Prioridad:</strong> <span style="color:${p.priority === 'Alta' ? 'red' : (p.priority === 'Media' ? 'orange' : 'green')}">${p.priority}</span></div>
+                    <div style="background:#f5f5f5; padding:4px; margin-top:5px; border-radius:4px; font-size:0.8rem;">
+                        <strong>Atiende:</strong> ${p.prof} <br>
+                        <strong>Estatus:</strong> ${p.status}
+                    </div>
+                </div>
+            `;
+
+            // Marker for "Points" layer and "Cluster" layer
+            const m = L.marker([p.lat, p.lng], { icon: getHelmetIcon(p.priority) }).bindPopup(content);
+            layers.points.addLayer(m);
+            layers.cluster.addLayer(m);
+
+            // Heat Data
+            const intensity = p.priority === "Alta" ? 1.0 : 0.5;
+            heatPoints.push([p.lat, p.lng, intensity]);
+        });
+
+        // Setup Heatmap
+        layers.heat.setLatLngs(heatPoints);
+        // Setup TypeDensity (Reuse points but different gradient logic implicitly in visualization choice)
+        layers.typedensity.setLatLngs(heatPoints); // Using same points for demo density
+
+        // Setup Regions Layer (Circles)
+        for (const [name, reg] of Object.entries(REGIONS)) {
+            const circle = L.circle([reg.lat, reg.lng], {
+                radius: 12000 + (reg.count * 100), // Size relative to count
+                color: reg.color,
+                fillColor: reg.color,
+                fillOpacity: 0.2
+            }).bindPopup(`Región: ${name} (${reg.count} puntos)`);
+            layers.regions.addLayer(circle);
+        }
+
+        // Init Map with Points
+        layers.points.addTo(map);
+
+        // --- 6. CONTROLS & LOGIC ---
+
+        function updateLayer(mode) {
+            // Remove all
+            Object.values(layers).forEach(l => map.removeLayer(l));
+            // Add selected
+            if (layers[mode]) map.addLayer(layers[mode]);
+        }
+
+        function zoomToRegion(regionName) {
+            if (regionName === 'all') {
+                map.flyTo([17.05, -96.7], 8);
+                return;
+            }
+            const r = REGIONS[regionName];
+            if (r) map.flyTo([r.lat, r.lng], 10);
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.sidebar-content').forEach(c => c.classList.remove('active'));
+
+            // Activate
+            if (tabId === 'layers') {
+                document.querySelectorAll('.tab')[0].classList.add('active');
+                document.getElementById('tab-layers').classList.add('active');
+            } else {
+                document.querySelectorAll('.tab')[1].classList.add('active');
+                document.getElementById('tab-feed').classList.add('active');
+                startFeedSimulation();
+            }
+        }
+
+        // --- 7. LIVE FEED SIMULATION ---
+        function startFeedSimulation() {
+            const list = document.getElementById('activityFeed');
+            if (list.childElementCount > 0) return; // Already started
+
+            // Add initial batch
+            const updates = POINTS.filter(p => p.status !== "Pendiente").slice(0, 15);
+            updates.forEach(u => addFeedItem(u));
+
+            // Interval add
+            setInterval(() => {
+                const randomP = POINTS[Math.floor(Math.random() * POINTS.length)];
+                addFeedItem(randomP, true);
+            }, 3000);
+        }
+
+        function addFeedItem(item, animate = false) {
+            const list = document.getElementById('activityFeed');
+            const li = document.createElement('li');
+            li.className = 'feed-item';
+            li.innerHTML = `
+                <div class="feed-meta">
+                    <span>${new Date().toLocaleTimeString()}</span>
+                    <span>${item.id}</span>
+                </div>
+                <div class="feed-main">${item.prof}</div>
+                <span class="feed-status-badge">${item.status}</span>
+                <span style="font-size:0.75rem; color:#888;"> en ${item.localidad}</span>
+            `;
+            list.prepend(li);
+            if (list.childElementCount > 50) list.removeChild(list.lastChild);
+        }
+
+        // --- 8. GEOLOCATION & NEAREST ---
+        let userMarker = null;
+
+        function toggleGeolocation() {
+            if (!navigator.geolocation) return;
+            navigator.geolocation.getCurrentPosition(pos => {
+                const { latitude, longitude } = pos.coords;
+
+                if (userMarker) map.removeLayer(userMarker);
+                userMarker = L.marker([latitude, longitude], { zIndexOffset: 1000 }).addTo(map)
+                    .bindPopup("Estás aquí").openPopup();
+
+                map.flyTo([latitude, longitude], 12);
+
+                // Find nearest
+                let minDist = Infinity;
+                let closest = null;
+                POINTS.forEach(p => {
+                    const d = getDist(latitude, longitude, p.lat, p.lng);
+                    if (d < minDist) { minDist = d; closest = p; }
+                });
+
+                if (closest) {
+                    document.getElementById('nearestPanel').style.display = 'block';
+                    document.getElementById('nearInfo').innerHTML = `
+                        <b>${closest.id}</b> - ${closest.type}<br>
+                        ${closest.prof} (${closest.status})
+                    `;
+                    document.getElementById('nearDist').innerText = minDist.toFixed(2) + " km";
+
+                    L.polyline([[latitude, longitude], [closest.lat, closest.lng]], { color: 'red', dashArray: '4' }).addTo(map);
+                }
+
+            }, err => alert("Error GPS: " + err.message));
+        }
+
+        function getDist(lat1, lon1, lat2, lon2) {
+            const R = 6371;
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        }
+
+        // --- 9. DRAW TOOLS ---
+        const drawnItems = new L.FeatureGroup();
+        map.addLayer(drawnItems);
+        const drawControl = new L.Control.Draw({ edit: { featureGroup: drawnItems } });
+        map.addControl(drawControl);
+        map.on(L.Draw.Event.CREATED, e => { drawnItems.addLayer(e.layer); });
+
+        // PWA
+        if ("serviceWorker" in navigator) navigator.serviceWorker.register("./service-worker.js");
+    </script>
+</body>
+
+</html>
